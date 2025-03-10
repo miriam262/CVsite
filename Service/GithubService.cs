@@ -38,7 +38,7 @@ namespace Service
             }
             _client = new GitHubClient(new ProductHeaderValue("my-CV-site"))
             {
-                Credentials = new Credentials(_options.Token) // הכנסת ה-Token ל-GitHubClient
+                Credentials = new Credentials(_options.Token) // הכנסת ה-Token ל-
             };
         }
         public async Task<List<Activity>> GetEvents()
