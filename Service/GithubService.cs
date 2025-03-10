@@ -14,20 +14,6 @@ namespace Service
     {
         private readonly GitHubClient _client;
         private readonly GitHubIntegrationsOptions _options;
-        //public GithubService(IOptions<GitHubIntegrationsOptions> options)
-        //{
-        //    var gitHubOptions = options.Value;
-
-        //    if (string.IsNullOrEmpty(gitHubOptions.Token))
-        //    {
-        //        throw new ArgumentException("GitHub Token is missing in configuration.");
-        //    }
-
-        //    _client = new GitHubClient(new ProductHeaderValue("my-CV-site"))
-        //    {
-        //        Credentials = new Credentials(gitHubOptions.Token) // הכנסת ה-Token ל-GitHubClient
-        //    };
-        //}
 
         public GithubService(IOptions<GitHubIntegrationsOptions> options)
         {
