@@ -14,18 +14,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//builder.Services.Configure<GitHubIntegrationsOptions>(builder.Configuration.GetSection(nameof(GitHubIntegrationsOptions)));
-//builder.Services.Configure<GitHubIntegrationsOptions>(builder.Configuration.GetSection("GitHubIntegrationsOptions"));
-builder.Services.AddGitHubIntegration(option => builder.Configuration.GetSection("GitHubIntegrationsOptions").Bind(option));
-var v = builder.Configuration.GetSection("GitHubIntegrationsOptions");
-var token = builder.Configuration["GitHubIntegrationsOptions:Token"];
-//var options = builder.Configuration.GetSection(nameof(GitHubIntegrationsOptions)).Get<GitHubIntegrationsOptions>();
-//Console.WriteLine($"🔍 Token: {options?.Token}, UserName: {options?.UserName}");
+builder.Services.AddGitHubIntegration(option => builder.Configuration.GetSection(nameof(GitHubIntegrationsOptions)).Bind(option));
+
 builder.Services.AddMemoryCache();
 
 builder.Services.AddScoped<IGitHubService, GithubService>();
 builder.Services.Decorate<IGitHubService,CachedGitHubService>();
-//builder.Configuration.AddUserSecrets<Program>();
 
 var app = builder.Build();
 
