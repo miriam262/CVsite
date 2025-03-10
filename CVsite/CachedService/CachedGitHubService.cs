@@ -20,7 +20,7 @@ namespace CVsite.CachedService
         }
         public async Task<List<RepositoryInfo>> GetPortfolio()
         {
-            var oldActsResult = await oldActs; // חכי שה-Task יחזיר את הרשימה
+            var oldActsResult = await oldActs; 
             var newActs = await _gitHubService.GetEvents();
             int oldCount = oldActsResult.Count(a => a.Type == "PushEvent" || a.Type == "CreateEvent");
 
