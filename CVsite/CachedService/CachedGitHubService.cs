@@ -20,15 +20,12 @@ namespace CVsite.CachedService
         }
         public async Task<List<RepositoryInfo>> GetPortfolio()
         {
-            var oldActsResult = await oldActs; 
             var newActs = await _gitHubService.GetEvents();
-            int oldCount = oldActsResult.Count(a => a.Type == "PushEvent" || a.Type == "CreateEvent");
-
-            int newCount = newActs.Count(a => a.Type == "PushEvent" || a.Type == "CreateEvent");
-
-            if (newCount == oldCount && 
-                _memoryCache.TryGetValue(userPortFolioKey, out List<RepositoryInfo> portfolio) && portfolio != null)
+            var oldActsResult = await oldActs;
+            if (newActs.Last().CreatedAt <= oldActsResult.Last().CreatedAt && _memoryCache.TryGetValue(userPortFolioKey, out List<RepositoryInfo> portfolio) && portfolio != null)
+            {
                 return portfolio;
+            }
             else
             {
                 var cacheOptions = new MemoryCacheEntryOptions()
@@ -38,7 +35,27 @@ namespace CVsite.CachedService
                 _memoryCache.Set(userPortFolioKey, portfolio, cacheOptions);
                 oldActs = Task.FromResult(newActs);
                 return portfolio;
-            } 
+            }
+
+            //var oldActsResult = await oldActs; 
+            //var newActs = await _gitHubService.GetEvents();
+            //int oldCount = oldActsResult.Count(a => a.Type == "PushEvent" || a.Type == "CreateEvent");
+
+            //int newCount = newActs.Count(a => a.Type == "PushEvent" || a.Type == "CreateEvent");
+
+            //if (newCount == oldCount && 
+            //    _memoryCache.TryGetValue(userPortFolioKey, out List<RepositoryInfo> portfolio) && portfolio != null)
+            //    return portfolio;
+            //else
+            //{
+            //    var cacheOptions = new MemoryCacheEntryOptions()
+            //    .SetAbsoluteExpiration(TimeSpan.FromSeconds(250))
+            //    .SetSlidingExpiration(TimeSpan.FromSeconds(90));
+            //    portfolio = await _gitHubService.GetPortfolio();
+            //    _memoryCache.Set(userPortFolioKey, portfolio, cacheOptions);
+            //    oldActs = Task.FromResult(newActs);
+            //    return portfolio;
+            //} 
         }
 
         public Task<List<Repository>> SearchRepositories(string language = null, string name = null, string userName = null)
