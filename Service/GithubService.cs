@@ -38,7 +38,7 @@ namespace Service
             }
             _client = new GitHubClient(new ProductHeaderValue("my-CV-site"))
             {
-                Credentials = new Credentials(_options.Token) // הכנסת ה-Token ל-
+                Credentials = new Credentials(_options.Token) // הכנסת ה-Token ל-GitHubClient
             };
         }
         public async Task<List<Activity>> GetEvents()
@@ -60,8 +60,8 @@ namespace Service
                     Language = repo.Language,
                     Stars = repo.StargazersCount,
                     PullRequests = pullRequest.Count(),
-                    LastCommit = repo.PushedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "No commits",
-                    RepoUrl = repo.HtmlUrl
+                    LastCommit = repo.PushedAt?.UtcDateTime,
+                RepoUrl = repo.HtmlUrl
                 });
             }
             return portFolio;

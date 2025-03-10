@@ -20,22 +20,39 @@ namespace CVsite.CachedService
         }
         public async Task<List<RepositoryInfo>> GetPortfolio()
         {
-            var newActs = await _gitHubService.GetEvents();
-            var oldActsResult = await oldActs;
-            if (newActs.Last().CreatedAt <= oldActsResult.Last().CreatedAt && _memoryCache.TryGetValue(userPortFolioKey, out List<RepositoryInfo> portfolio) && portfolio != null)
+            //var newActs = await _gitHubService.GetEvents();
+            //var oldActsResult = await oldActs;
+            if (_memoryCache.TryGetValue(userPortFolioKey, out List<RepositoryInfo> portfolio) && portfolio != null)
             {
-                return portfolio;
+                var lastUpdated = portfolio.Max(m => m.LastCommit);
+                portfolio = await _gitHubService.GetPortfolio();
+                bool isUpdated = portfolio.Any(r => r.LastCommit > lastUpdated);
+                if (!isUpdated)
+                {
+                    return portfolio;
+                }
             }
-            else
-            {
+                portfolio = await _gitHubService.GetPortfolio();
                 var cacheOptions = new MemoryCacheEntryOptions()
                 .SetAbsoluteExpiration(TimeSpan.FromSeconds(250))
                 .SetSlidingExpiration(TimeSpan.FromSeconds(90));
-                portfolio = await _gitHubService.GetPortfolio();
-                _memoryCache.Set(userPortFolioKey, portfolio, cacheOptions);
-                oldActs = Task.FromResult(newActs);
-                return portfolio;
+            return portfolio;
             }
+
+            //if (newActs.Last().CreatedAt <= oldActsResult.Last().CreatedAt && _memoryCache.TryGetValue(userPortFolioKey, out List<RepositoryInfo> portfolio) && portfolio != null)
+            //{
+            //    return portfolio;
+            //}
+            //else
+            //{
+            //    var cacheOptions = new MemoryCacheEntryOptions()
+            //    .SetAbsoluteExpiration(TimeSpan.FromSeconds(250))
+            //    .SetSlidingExpiration(TimeSpan.FromSeconds(90));
+            //    portfolio = await _gitHubService.GetPortfolio();
+            //    _memoryCache.Set(userPortFolioKey, portfolio, cacheOptions);
+            //    oldActs = Task.FromResult(newActs);
+            //    return portfolio;
+            //}
 
             //var oldActsResult = await oldActs; 
             //var newActs = await _gitHubService.GetEvents();
@@ -56,7 +73,6 @@ namespace CVsite.CachedService
             //    oldActs = Task.FromResult(newActs);
             //    return portfolio;
             //} 
-        }
 
         public Task<List<Repository>> SearchRepositories(string language = null, string name = null, string userName = null)
         {

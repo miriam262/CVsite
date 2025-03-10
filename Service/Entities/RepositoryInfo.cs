@@ -12,7 +12,7 @@ namespace Service.Entities
         public string Language { get; set; }
         public int Stars { get; set; }
         public int PullRequests { get; set; }
-        public string LastCommit { get; set; }
+        public DateTime? LastCommit { get; set; }
         public string RepoUrl { get; set; }
     }
 }
