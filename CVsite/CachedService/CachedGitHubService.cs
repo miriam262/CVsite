@@ -24,10 +24,8 @@ namespace CVsite.CachedService
             var newActs = await _gitHubService.GetEvents();
             int oldCount = oldActsResult.Count(a => a.Type == "PushEvent" || a.Type == "CreateEvent");
 
-            // ספירת כמות ה-Events הרלוונטיים בנתונים החדשים
             int newCount = newActs.Count(a => a.Type == "PushEvent" || a.Type == "CreateEvent");
 
-            // אם נוספו אירועים חדשים - שלוף מחדש
             if (newCount == oldCount && 
                 _memoryCache.TryGetValue(userPortFolioKey, out List<RepositoryInfo> portfolio) && portfolio != null)
                 return portfolio;
